@@ -1,0 +1,702 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -816,
+        -16
+      ],
+      "id": "24a1418c-699e-4e03-9474-e47efe979211",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "z-ai/glm-5.3-flash",
+          "mode": "list",
+          "cachedResultName": "z-ai/glm-5.3-flash"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -576,
+        208
+      ],
+      "id": "2837f0d8-56a7-4f52-9cee-ce8f9a793f6e",
+      "name": "NVIDIA NIM Fast Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "UiMSel63gmOy2wMR",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=SENDER: {{ $json.From }}\nSUBJECT: {{ $json.Subject }}\nBODY: {{ $json.snippet }}",
+        "options": {
+          "systemMessage": "=You are an expert AI Career and Email Classifier for Manish Kumar Yadav.\n\nCANDIDATE PROFILE FOR MATCHING:\n- Candidate Name: Manish Kumar Yadav\n- Target Roles: Full Stack Developer, MERN Stack Developer, Frontend Developer, Backend Developer, Web Developer.\n- Total Experience: ~2 years total hands-on experience in MERN stack software development.\n- Core Tech Stack: React.js, Next.js, Node.js, Express.js, MongoDB, TypeScript, JavaScript (ES6+), REST APIs, Tailwind CSS, Service Workers, n8n Workflow Automations.\n- Primary Key Projects: BillPharma (Solo-built multi-tenant pharmacy SaaS platform with offline billing and RBAC), WealthX (Digital product platform with QR payment verification), RCGemini CRM, and n8n AI Automations.\n- Contact Info: manishkyadav969@gmail.com | +91-7404775037 | Portfolio: https://manishportfolio7.netlify.app | GitHub: https://github.com/Manish-Yadav77\n\nCLASSIFICATION CATEGORIES:\n1. URGENT_INTERVIEW: Walk-in interview invites, candidate shortlist notifications, direct recruiter outreach, interview scheduling links, or required immediate candidate actions (such as uploading resume or filling screening details) strictly for software engineering, MERN, React, Node.js, Frontend, Backend, or Full Stack roles.\n2. RELEVANT_JOB_MATCH: Job alerts and openings matching Full Stack, MERN, React, Next.js, Node.js, Express, or Web Development roles from job boards (Naukri, Wellfound, Instahyre, LinkedIn, Indeed, etc.).\n3. APPLICATION_STATUS: Confirmation emails confirming application submission or resume receipt for technical software development roles.\n4. OUTSKILL_EMAIL: Emails from OutSkill regarding webinars, AI masterminds, or accelerator workshops.\n5. IRRELEVANT_PROMO: Any non-engineering jobs (Customer Support, BPO, Sales, Accounts, non-tech walk-ins), generic promotional marketing, or mismatched seniority level roles (e.g., Senior Cloud Architect with 8+ years requirement).\n\nDRAFT REPLY RULES:\nIf the email is a direct message or invitation from a recruiter asking for availability, resume submission, or interview scheduling, set draft_reply_needed to true and generate a concise, polite email response signed by Manish Kumar Yadav mentioning his ~2 years of MERN experience and key project BillPharma.\n\nOUTPUT FORMAT:\nReturn JSON only in this exact format:\n{\n  \"category\": \"URGENT_INTERVIEW\" | \"RELEVANT_JOB_MATCH\" | \"APPLICATION_STATUS\" | \"OUTSKILL_EMAIL\" | \"IRRELEVANT_PROMO\",\n  \"company_name\": \"Extracted Company Name or N/A\",\n  \"job_role\": \"Extracted Job Role or N/A\",\n  \"requires_action\": true/false,\n  \"action_summary\": \"Short bullet summary of required next step for Manish\",\n  \"draft_reply_needed\": true/false,\n  \"suggested_reply\": \"Generated response string if draft_reply_needed is true, else empty string\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -576,
+        -16
+      ],
+      "id": "548bc3f7-d1f2-4b8e-b132-2433fe783cf8",
+      "name": "CV-Tuned Email Classifier"
+    },
+    {
+      "parameters": {
+        "jsCode": "const responseText = $input.first().json.output;\ntry {\n  const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();\n  const parsed = JSON.parse(cleanJson);\n  return [{ json: { ...$input.first().json, classification: parsed } }];\n} catch (e) {\n  return [{ json: { ...$input.first().json, classification: {\n    category: \"IRRELEVANT_PROMO\",\n    company_name: \"Unknown\",\n    job_role: \"Unknown\",\n    requires_action: false,\n    action_summary: \"Failed to parse response\",\n    draft_reply_needed: false,\n    suggested_reply: \"\"\n  } } }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -304,
+        -16
+      ],
+      "id": "eee71f01-34e4-459a-975c-225314b0aa77",
+      "name": "Parse AI Classification"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.classification.category }}",
+                    "rightValue": "URGENT_INTERVIEW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.classification.category }}",
+                    "rightValue": "RELEVANT_JOB_MATCH",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.classification.category }}",
+                    "rightValue": "APPLICATION_STATUS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.classification.category }}",
+                    "rightValue": "OUTSKILL_EMAIL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.classification.category }}",
+                    "rightValue": "IRRELEVANT_PROMO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -64,
+        -16
+      ],
+      "id": "a0e3003f-79e6-4c6b-a127-62a245b18363",
+      "name": "Route By Category"
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "create",
+        "name": "Application Status",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        128,
+        80
+      ],
+      "id": "19d4a143-25f1-4103-a8f2-856d113c31e6",
+      "name": "Create Label Status",
+      "webhookId": "c799716f-ed52-4eee-a2f6-95a5577c1da2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "create",
+        "name": "Urgent Interviews",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        128,
+        -224
+      ],
+      "id": "8c4edbd7-818a-44be-a0c7-de304e646e50",
+      "name": "Create Label Urgent",
+      "webhookId": "e8578617-abb9-43b5-98ee-65c659bbbf87",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "create",
+        "name": "Relevant Opportunities",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        128,
+        -64
+      ],
+      "id": "539c2c4e-0c8d-45ed-99b9-e3ab8bd149d1",
+      "name": "Create Label Relevant",
+      "webhookId": "8f8e0ca9-69e8-4194-a6d2-0bc80d0b0a6c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "create",
+        "name": "OutSkill",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        128,
+        240
+      ],
+      "id": "967d4af2-71e9-42e1-afe7-3ea9422d98a2",
+      "name": "Create Label OutSkill",
+      "webhookId": "d9f0cd93-1d38-4299-970c-1f7397f4a01e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "create",
+        "name": "Irrelevant Promo",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        128,
+        384
+      ],
+      "id": "b6e06843-1dd7-48b4-a792-297b1188d63a",
+      "name": "Create Label Promo",
+      "webhookId": "29843aaa-cc0c-4a23-a9e9-e0ac745efe67",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "={{ $json.id || 'Application Status' }}"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        80
+      ],
+      "id": "a7a80e76-e4d5-4f0c-a704-d15ffaf742c6",
+      "name": "Label: Application Status",
+      "webhookId": "e18728bc-9a5c-464a-b841-26660f562ab3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "={{ $json.id || 'Urgent Interviews' }}"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        -224
+      ],
+      "id": "422f8f7d-6838-43e6-8d12-c9690a0472b7",
+      "name": "Label: Urgent Interview",
+      "webhookId": "991e04e2-556b-4b7e-98b3-e5bdca33f2a2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "={{ $json.id || 'Relevant Opportunities' }}"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        -64
+      ],
+      "id": "0870ddeb-0530-461b-81ad-e9e708e33c29",
+      "name": "Label: Relevant Job",
+      "webhookId": "95605638-6b0d-4555-986a-4fa1ecf7d4b9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "={{ $json.id || 'OutSkill' }}"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        240
+      ],
+      "id": "8e712fd2-5fba-4500-8738-8fddb9921748",
+      "name": "Label: OutSkill",
+      "webhookId": "1b272ff6-6867-45a9-9ca6-5bed4920b298",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "={{ $json.id || 'Irrelevant Promo' }}"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        384
+      ],
+      "id": "f398f10a-90b1-4f95-aca0-6c76722c6fb2",
+      "name": "Label: Irrelevant Promo",
+      "webhookId": "f40c5932-8f0b-4d59-bf08-d6fe63b5cb2f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $('Parse AI Classification').item.json.classification.draft_reply_needed }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -224
+      ],
+      "id": "1492e677-d6d0-43b9-b392-16980b1319c1",
+      "name": "Draft Needed?"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "=Re: {{ $('Gmail Trigger').item.json.Subject }}",
+        "message": "={{ $('Parse AI Classification').item.json.classification.suggested_reply }}",
+        "options": {
+          "threadId": "={{ $('Gmail Trigger').item.json.threadId }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        -336
+      ],
+      "id": "b3648232-9c0a-4e7c-b7b8-b16f520e24a1",
+      "name": "Create Gmail Draft",
+      "webhookId": "1c9d4876-f0da-4c4d-bb30-b41001625e67",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "98Fj5I6Ve27qfrTA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1387973721060985",
+        "recipientPhoneNumber": "917404775037",
+        "textBody": "=🚨 *JOB ALERT / INTERVIEW UPDATE* 🚨\n\n📌 *Company:* {{ $('Parse AI Classification').item.json.classification.company_name }}\n🎯 *Role:* {{ $('Parse AI Classification').item.json.classification.job_role }}\n📩 *Subject:* {{ $('Gmail Trigger').item.json.Subject }}\n\n⚡ *Required Action:* {{ $('Parse AI Classification').item.json.classification.action_summary }}\n\n✍️ *Draft Reply Created:* {{ $('Parse AI Classification').item.json.classification.draft_reply_needed ? 'Yes (Saved in Gmail Drafts)' : 'No direct reply needed' }}\n\nPlease check your Gmail to proceed!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        -208
+      ],
+      "id": "005392db-eadb-488a-a318-ca6de609d651",
+      "name": "WhatsApp Business Cloud",
+      "webhookId": "cfa6e6d4-e014-44f4-9d52-4e21154c65c3",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "uaNLkH93nNt3fkb1",
+          "name": "WhatsApp account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "CV-Tuned Email Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NVIDIA NIM Fast Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "CV-Tuned Email Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CV-Tuned Email Classifier": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Classification": {
+      "main": [
+        [
+          {
+            "node": "Route By Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route By Category": {
+      "main": [
+        [
+          {
+            "node": "Create Label Urgent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Label Relevant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Label Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Label OutSkill",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Label Promo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Label Status": {
+      "main": [
+        [
+          {
+            "node": "Label: Application Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Label Urgent": {
+      "main": [
+        [
+          {
+            "node": "Label: Urgent Interview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Label Relevant": {
+      "main": [
+        [
+          {
+            "node": "Label: Relevant Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Label OutSkill": {
+      "main": [
+        [
+          {
+            "node": "Label: OutSkill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Label Promo": {
+      "main": [
+        [
+          {
+            "node": "Label: Irrelevant Promo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Label: Urgent Interview": {
+      "main": [
+        [
+          {
+            "node": "Draft Needed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft Needed?": {
+      "main": [
+        [
+          {
+            "node": "Create Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Gmail Draft": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6d5aeedb7a1a28548bb8cf387acb714c596b660f1301c1f28ad5b9e30ec340fd"
+  }
+}
