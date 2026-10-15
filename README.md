@@ -5,7 +5,7 @@ A collection of production-ready n8n workflows for automated ATS resume tailorin
 ## Developer
 
 - **Name**: Manish Kumar Yadav
-- **Role**: Full Stack Developer & Forward Deployed Engineer
+- **Role**: Full Stack Developer
 - **Portfolio**: [manishportfolio7.netlify.app](https://manishportfolio7.netlify.app)
 - **GitHub**: [github.com/Manish-Yadav77](https://github.com/Manish-Yadav77)
 - **LinkedIn**: [linkedin.com/in/manish-yadav-fullstack-mern](https://www.linkedin.com/in/manish-yadav-fullstack-mern/)
