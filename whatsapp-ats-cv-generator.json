@@ -1,0 +1,234 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -208
+      ],
+      "id": "6711fe69-dbb8-4e6f-8ef2-5ef2a996d9b1",
+      "name": "WhatsApp Trigger",
+      "webhookId": "8ac2a0d5-b44c-428a-9b26-4ab839f6bf04",
+      "alwaysOutputData": false,
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "PejWm6xaD4hnYpbF",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1387973721060985",
+        "recipientPhoneNumber": "+91 7404775037",
+        "messageType": "document",
+        "mediaPath": "useMedian8n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        544,
+        -208
+      ],
+      "id": "69e831da-4244-4e62-a8e9-dfe02afd1d36",
+      "name": "Send message and wait for response",
+      "webhookId": "f5646e61-f3bb-444c-bcf1-312494c24cd6",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "uaNLkH93nNt3fkb1",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "You are an expert ATS resume writer and technical career strategist. Analyze the incoming Job Description (JD) from WhatsApp and rewrite Manish Kumar Yadav's resume content to match it as closely as possible for both ATS keyword scoring and human readability — while staying 100% factually accurate to his real background below.\n\nSTRICT RULES:\n1. NEVER invent or fake skills, job titles, companies, dates, metrics, claims, or responsibilities. Only rephrase/reorder/optimize what's explicitly listed in USER REAL PROFILE below. Never add generic corporate phrases that aren't in his real data (e.g. never say \"stakeholders,\" \"discovery sessions,\" \"client meetings,\" or anything not grounded in his real bullets).\n2. Extract the JD's core keywords and rewrite/reorder the summary, skills, and bullets so those keywords appear naturally, without fabricating new responsibilities.\n3. NEVER repeat the same keyword/buzzword more than 2 times total across the entire resume. Vary phrasing.\n4. Bold (using <strong></strong>) at least 1 JD-relevant keyword/phrase in EVERY single bullet point, and in the summary and skills too. Don't over-bold entire sentences.\n5. Bullet count rules (STRICT):\n   - Professional Summary: exactly 3 tight lines.\n   - RCGemini (Full Stack Developer) experience: 5 to 7 bullets, rewritten/reordered to match JD, same real tone/content as his actual RCGemini bullets — only reworded, never new claims.\n   - Kodu Internship experience: 3 to 5 bullets, same rule — real tone only, no invented responsibilities.\n   - Projects: ALWAYS include BillPharma first with 5 to 7 bullets (never remove it, never change its name/link, only rewrite its bullets to match JD, tone must match his real BillPharma bullets). ALWAYS include exactly 1 or 2 more projects from the POOL below (NEVER output BillPharma alone — minimum 2 projects, maximum 3 total):\n       - If 2 total projects: give the second project 5 to 6 bullets (2-3 more than its pool default, to fill the page).\n       - If 3 total projects: give each additional project 3 to 5 bullets.\n6. SKILLS SECTION FORMAT (STRICT): Always output exactly 7 categories, in this exact order and labels: \"Languages\", \"Frontend\", \"Backend\", \"Databases\", \"System & Core\", \"DevOps & Open Source\", \"AI & Cloud Integrations\". Use his real skill items only (below), reordered per JD relevance, with n8n/AWS/automation items included in \"AI & Cloud Integrations\" (or \"Backend\" if JD is automation/integration heavy) whenever the JD relates to automation/AI/workflows. Bold 1-3 JD-relevant items per category. Do NOT paste the same static list every time — always reorder/select based on JD.\n7. PROJECT POOL (pick 1-2 most JD-relevant, in addition to BillPharma which is always included):\n   - WealthX — digital product platform, QR payments, client verification (link: rcgemini-wealthx.netlify.app, date: June, 2025). No tech-stack line. Real bullets to rephrase from: \"Engineered client-facing digital payment verification workflows and seller management panels using React and Node.js.\"; \"Implemented role-based access control (RBAC) and manual QR transaction verification to validate buyer/seller claims securely.\"; \"Streamlined client onboarding and transaction audit trails, driving a 40% increase in verified product transactions.\"; \"Built responsive client dashboards for real-time order tracking and submission history.\"\n   - AI Job Email & WhatsApp Automation (n8n, AWS) — date MUST always be exactly \"Sep, 2025\", no link. No tech-stack line. Real bullets to rephrase from: \"Engineered an automated email filtering and labeling workflow using n8n and Gmail API on AWS to isolate high-priority job opportunities in real time.\"; \"Integrated WhatsApp API webhooks to send instant notifications and auto-respond with tailored CVs or details upon client/recruiter request.\"; \"Structured prompt parsing and payload validation rules to extract action items and minimize manual response latency.\"; \"Deployed and maintained self-hosted n8n workflows on AWS EC2, ensuring stable webhook processing and high system availability.\"\n   - WhatsApp AI Agent Automation (n8n) — date MUST always be exactly \"Aug, 2025\", no link. No tech-stack line. Real bullets to rephrase from: \"Developed a conversational AI agent using n8n and OpenAI APIs, automating real-time user interaction over WhatsApp via webhooks.\"; \"Engineered structured prompts and output validation, achieving 90%+ accuracy in intent detection and response quality.\"; \"Implemented conversation memory and context-aware drafting, cutting average response time by 70% for client inquiries.\"; \"Tested automation logic across edge cases and provided post-deployment monitoring and troubleshooting.\"\n   - RCGemini CRM — React/Context API + Node/MongoDB CRM (link: rcgemini-crm.netlify.app, date: July, 2025). No tech-stack line.\n   - AI CV Generator Automation (n8n) — date MUST always be exactly \"Sep, 2025\", no link. No tech-stack line.\n8. Tech stack line (\"Tech: ...\") appears ONLY under BillPharma. Never add a tech-stack line to any other project.\n9. Every bullet starts with a strong action verb. Keep language plain, ATS-friendly, one page total.\n10. Return ONLY a valid raw JSON object. NO markdown, NO ```json fences, NO commentary, NO text before or after the JSON.\n\nUSER REAL PROFILE:\n- Name: Manish Kumar Yadav\n- Location: Rohtak, Haryana, India\n- Contact: manishkyadav969@gmail.com | +91 7404775037\n- Links: Portfolio [https://manishportfolio7.netlify.app](https://manishportfolio7.netlify.app) | GitHub [https://github.com/Manish-Yadav77](https://github.com/Manish-Yadav77) | LinkedIn [https://www.linkedin.com/in/manish-yadav-fullstack-mern/](https://www.linkedin.com/in/manish-yadav-fullstack-mern/)\n- Education: BCA from MDU Rohtak (Dec 2024)\n- Real Skill Items by Category:\n  - Languages: TypeScript, JavaScript (ES6+), Java, C++, Python\n  - Frontend: React.js, Next.js, Monaco Editor / CodeMirror Integration, HTML5, CSS3, Tailwind CSS, Component Architecture\n  - Backend: Node.js, Express.js, REST API Design, Authentication (JWT, OAuth), Webhook Integrations\n  - Databases: MongoDB, Mongoose, PostgreSQL (Basics)\n  - System & Core: Data Structures & Algorithms, API Design, Dynamic UI State Management, Multi-Tenant Architecture\n  - DevOps & Open Source: Git, GitHub, Postman, AWS (EC2 deployment), Docker (Basics), CI/CD (GitHub Actions), Netlify, Render\n  - AI & Cloud Integrations: n8n Workflow Automation, Webhook Pipeline Design, AI Agent Integration, Prompt Engineering Workflows, Generative AI Integration (Gemini API/Vision), RAG/AI-assisted Tooling\n- Real RCGemini bullets (Apr 2025 – Present) to rephrase, never invent new ones: \"Delivered 4 production-ready MERN applications within a 3-member team, owning feature development, debugging, and deployment workflows.\"; \"Built responsive React.js interfaces and reusable component systems, reducing development cycle time by 30% and improving cross-platform consistency.\"; \"Developed admin dashboards and real-time data workflows, improving operational visibility and system usability.\"; \"Engineered the WealthX platform with QR-based payments, client payment verification, and role-based access, improving completed transactions by 40%.\"; \"Contributed to internal CRM development with secure authentication and task tracking, increasing team throughput by 30%.\"\n- Real Kodu Internship bullets (Oct 2024 – Apr 2025): \"Developed full-stack features using React.js, Node.js, and MongoDB, improving application usability and responsiveness.\"; \"Optimized frontend architecture using reusable components, cut development time by 30% while improving cross-device compatibility.\"; \"Identified and fixed application-level defects, reducing reported bugs by 15% and improving system performance by 25%.\"\n- Real BillPharma bullets (Dec 2025 – Present, link billpharma.netlify.app): \"Designed and deployed a production-grade multi-tenant SaaS platform for pharmacy operations, handling inventory, billing, GST compliance, and financial analytics.\"; \"Engineered offline-first billing using Service Workers and client-side storage, ensuring uninterrupted invoice generation during network failures.\"; \"Implemented tenant-isolated architecture with role-based access control (RBAC), enabling secure multi-organization usage within a single system.\"; \"Integrated AI-assisted inventory forecasting and billing workflows, reducing manual data entry effort by ~60% and improving operational accuracy.\"; \"Built scalable REST APIs and optimized frontend performance, ensuring fast and reliable user experience across modules.\"; \"Engineered interactive UI control panels and real-time state extraction tools for complex multi-field forms, improving data entry speed by 40%.\"; \"Established GST-compliant invoicing with automated tax calculations aligned with Indian regulatory requirements.\" Tech: TypeScript, React.js, Node.js, Express.js, MongoDB, AI Integration, Service Workers, Tailwind CSS\n- Education & Certifications: Full Stack Development Program + Internship, Kodu (Powered by Dhurina), Hisar, Haryana (Apr 2025); Bachelor of Computer Application (BCA), MDU Rohtak (Dec 2024) — Coursework: Java, C++, DBMS, Operating Systems, Computer Networks, OOP.\n\nOUTPUT FORMAT (JSON ONLY, no markdown):\n{\n  \"summary\": \"Tailored 3-line professional summary matching the JD, with <strong> bolded keywords...\",\n  \"skills\": [\n    { \"label\": \"Languages\", \"items\": \"...\" },\n    { \"label\": \"Frontend\", \"items\": \"...\" },\n    { \"label\": \"Backend\", \"items\": \"...\" },\n    { \"label\": \"Databases\", \"items\": \"...\" },\n    { \"label\": \"System & Core\", \"items\": \"...\" },\n    { \"label\": \"DevOps & Open Source\", \"items\": \"...\" },\n    { \"label\": \"AI & Cloud Integrations\", \"items\": \"...\" }\n  ],\n  \"rcgemini_bullets\": [\"5 to 7 tailored bullets, at least one <strong> keyword each...\"],\n  \"kodu_bullets\": [\"3 to 5 tailored bullets, at least one <strong> keyword each...\"],\n  \"projects\": [\n    {\n      \"name\": \"BillPharma — Multi-Tenant Pharmacy Management SaaS, Solo Developer\",\n      \"link\": \"billpharma.netlify.app\",\n      \"date\": \"Dec, 2025 – Present\",\n      \"tech\": \"TypeScript, React.js, Node.js, Express.js, MongoDB, AI Integration, Service Workers, Tailwind CSS\",\n      \"bullets\": [\"5 to 7 tailored bullets...\"]\n    },\n    {\n      \"name\": \"Second project from pool, matched to JD\",\n      \"link\": \"link or empty string\",\n      \"date\": \"fixed date per pool rules\",\n      \"tech\": \"\",\n      \"bullets\": [\"bullets per rule 5\"]\n    }\n  ]\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -128,
+        -208
+      ],
+      "id": "884bc396-7642-4108-84fd-9b19b016b02a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "moonshotai/kimi-k3"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "36dcf1bc-247f-4e56-9101-de2084fa500b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "UiMSel63gmOy2wMR",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "contextWindowLength": 1000
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        16
+      ],
+      "id": "827cd5ca-d547-4bac-bf1e-fecff9592370",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const rawOutput = $input.item.json.output || $input.item.json.text || \"\";\nlet aiOutput = {};\n\nif (typeof rawOutput === 'object') {\n  aiOutput = rawOutput;\n} else {\n  const jsonMatch = rawOutput.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    try { aiOutput = JSON.parse(jsonMatch[0]); } catch (e) { aiOutput = {}; }\n  }\n}\n\nconst summary = aiOutput.summary || \"Software Engineer experienced in building production-grade <strong>TypeScript</strong> and <strong>React</strong> SaaS applications end-to-end. Built and shipped <strong>BillPharma</strong>, a multi-tenant platform featuring offline-first workflows, RBAC, and AI-assisted inventory tools. Experienced in developing <strong>interactive UI features</strong>, client-facing verification flows, and <strong>REST API integrations</strong> across production applications. Strong background in <strong>workflow automations</strong>, AWS deployment, and clean component architecture.\";\n\nconst defaultSkills = [\n  { label: \"Languages\", items: \"TypeScript, JavaScript (ES6+), Java, C++, Python\" },\n  { label: \"Frontend\", items: \"React.js, Next.js, Monaco Editor / CodeMirror Integration, HTML5, CSS3, Tailwind CSS, Component Architecture\" },\n  { label: \"Backend\", items: \"Node.js, Express.js, REST API Design, Authentication (JWT, OAuth), Webhook Integrations\" },\n  { label: \"Databases\", items: \"MongoDB, Mongoose, PostgreSQL (Basics)\" },\n  { label: \"System & Core\", items: \"Data Structures & Algorithms, API Design, Dynamic UI State Management, Multi-Tenant Architecture\" },\n  { label: \"DevOps & Open Source\", items: \"Git, GitHub, Postman, AWS (EC2), Docker (Basics), CI/CD (GitHub Actions), Netlify, Render\" },\n  { label: \"AI & Cloud Integrations\", items: \"n8n Workflow Automation, Webhook Pipelines, Prompt Engineering, Generative AI Integration (Gemini API/Vision), RAG/AI-assisted Tooling\" }\n];\n\nconst skills = Array.isArray(aiOutput.skills) && aiOutput.skills.length ? aiOutput.skills.slice(0, 7) : defaultSkills;\n\nconst rcgeminiBullets = aiOutput.rcgemini_bullets || [\n  \"Delivered <strong>4 production-ready MERN applications</strong> within a 3-member team, owning feature development, debugging, and deployment workflows.\",\n  \"Built responsive <strong>React.js</strong> interfaces and reusable component systems, reducing development cycle time by 30% and improving cross-platform consistency.\",\n  \"Developed admin dashboards and real-time data workflows, improving operational visibility and system usability.\",\n  \"Engineered the <strong>WealthX</strong> platform with QR-based payments, client payment verification, and role-based access, driving completed transactions by 40%.\",\n  \"Contributed to internal <strong>CRM development</strong> with secure authentication and task tracking, increasing team throughput by 30%.\"\n];\n\nconst koduBullets = aiOutput.kodu_bullets || [\n  \"Developed full-stack features using <strong>React.js</strong>, <strong>Node.js</strong>, and <strong>MongoDB</strong>, improving application usability and responsiveness.\",\n  \"Optimized frontend architecture using reusable components, cut development time by 30% while improving cross-device compatibility.\",\n  \"Identified and fixed application-level defects, reducing reported bugs by 15% and improving system performance by 25%.\"\n];\n\nconst defaultBillpharma = {\n  name: \"BillPharma — Multi-Tenant Pharmacy Management SaaS, Solo Developer\",\n  link: \"billpharma.netlify.app\",\n  date: \"Dec, 2025 – Present\",\n  tech: \"TypeScript, React.js, Node.js, Express.js, MongoDB, AI Integration, Service Workers, Tailwind CSS\",\n  bullets: [\n    \"Designed and deployed a <strong>production-grade multi-tenant SaaS platform</strong> for pharmacy operations, handling inventory, billing, GST compliance, and financial analytics.\",\n    \"Engineered <strong>offline-first billing</strong> using <strong>Service Workers</strong> and client-side storage, ensuring uninterrupted invoice generation during network failures.\",\n    \"Implemented <strong>tenant-isolated architecture</strong> with <strong>role-based access control (RBAC)</strong>, enabling secure multi-organization usage within a single system.\",\n    \"Integrated <strong>AI-assisted inventory forecasting</strong> and billing workflows, reducing manual data entry effort by ~60% and improving operational accuracy.\",\n    \"Built scalable <strong>REST APIs</strong> and optimized frontend performance, ensuring fast and reliable user experience across modules.\",\n    \"Engineered interactive UI control panels and real-time state extraction tools for complex multi-field forms, improving data entry speed by 40%.\",\n    \"Established GST-compliant invoicing with automated tax calculations aligned with Indian regulatory requirements.\"\n  ]\n};\n\nconst defaultSecondProject = {\n  name: \"AI Job Email & WhatsApp Automation (n8n, AWS)\",\n  link: \"\",\n  date: \"Sep, 2025\",\n  tech: \"\",\n  bullets: [\n    \"Engineered an automated email filtering and labeling workflow using <strong>n8n</strong> and <strong>Gmail API</strong> hosted on <strong>AWS</strong> to isolate high-priority job opportunities in real time.\",\n    \"Integrated <strong>WhatsApp API webhooks</strong> to trigger instant alerts and auto-respond with tailored CVs or details upon client/recruiter request.\",\n    \"Structured prompt parsing and payload validation rules to extract key action items and minimize manual response latency.\",\n    \"Deployed and maintained self-hosted n8n workflows on <strong>AWS EC2</strong>, ensuring stable webhook processing and operational uptime.\"\n  ]\n};\n\nlet projects = Array.isArray(aiOutput.projects) && aiOutput.projects.length ? aiOutput.projects.slice(0, 3) : [defaultBillpharma, defaultSecondProject];\n\nconst hasBillpharma = projects.some(p => (p.name || \"\").toLowerCase().includes(\"billpharma\"));\nif (!hasBillpharma) projects.unshift(defaultBillpharma);\n\n// Enforce minimum 2 projects — never BillPharma alone\nif (projects.length < 2) {\n  projects.push(defaultSecondProject);\n}\nprojects = projects.slice(0, 3);\n\n// Enforce fixed dates, links, and strip tech line from non-BillPharma projects\nprojects = projects.map(p => {\n  const n = (p.name || \"\").toLowerCase();\n  let updated = { ...p };\n  if (n.includes(\"wealthx\")) {\n    updated.link = \"rcgemini-wealthx.netlify.app\";\n    updated.date = \"June, 2025\";\n  }\n  if (n.includes(\"job email\") || n.includes(\"ai cv generator\")) updated.date = \"Sep, 2025\";\n  if (n.includes(\"whatsapp ai agent\")) updated.date = \"Aug, 2025\";\n  if (!n.includes(\"billpharma\")) updated.tech = \"\";\n  return updated;\n});\n\nconst renderProject = (p) => `\n  <div class=\"item-row\">\n    <span class=\"item-title\">${p.name || \"\"}${p.link ? ` (<a href=\"https://${p.link}\">${p.link}</a>)` : \"\"}</span>\n    <span class=\"item-date\">${p.date || \"\"}</span>\n  </div>\n  <ul class=\"bullet-list\">\n    ${(p.bullets || []).map(b => `<li>${b}</li>`).join('')}\n  </ul>\n  ${p.tech ? `<div class=\"tech-stack\"><strong>Tech:</strong> ${p.tech}</div>` : \"\"}\n`;\n\nconst renderSkills = (skillsArr) => skillsArr.map(s => `<li>• <strong>${s.label}:</strong> ${s.items}</li>`).join('');\n\nconst htmlTemplate = `\n<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<style>\n  * { box-sizing: border-box; margin: 0; padding: 0; }\n  body {\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 7.9pt;\n    line-height: 1.28;\n    color: #333;\n    padding: 17px 22px;\n  }\n\n  .header { text-align: center; margin-bottom: 8px; }\n  .header h1 { font-size: 18pt; font-weight: bold; margin-bottom: 2px; color: #1a365d; }\n  .header .contact-line { font-size: 8.5pt; color: #555; }\n  .header a { color: #2b6cb0; text-decoration: none; }\n\n  h2.section-title {\n    font-size: 9.0pt;\n    font-weight: bold;\n    text-transform: uppercase;\n    border-bottom: 1.5px solid #2b6cb0;\n    color: #2b6cb0;\n    margin-top: 8px;\n    margin-bottom: 4px;\n    padding-bottom: 1px;\n    letter-spacing: 0.4px;\n  }\n\n  p { font-size: 8.0pt; margin-bottom: 3px; text-align: justify; color: #333; }\n\n  .skills-list { list-style: none; padding-left: 0; margin-bottom: 3px; }\n  .skills-list li { font-size: 8.5pt; margin-bottom: 2px; line-height: 1.25; color: #333; }\n\n  .item-row {\n    display: flex;\n    justify-content: space-between;\n    align-items: baseline;\n    font-size: 8.4pt;\n    margin-top: 4px;\n  }\n  .item-title { font-weight: bold; color: #1a365d; }\n  .item-date { font-weight: normal; font-size: 8pt; color: #666; white-space: nowrap; }\n  .item-subtitle { font-style: italic; font-size: 8pt; color: #555; margin-bottom: 2px; }\n\n  ul.bullet-list { padding-left: 14px; margin-bottom: 3px; }\n  ul.bullet-list li { font-size: 8.4pt; margin-bottom: 1.5px; text-align: justify; color: #333; }\n\n  .tech-stack { font-size: 8pt; margin-top: 2px; margin-bottom: 3px; color: #555; }\n\n  a { color: #2b6cb0; text-decoration: none; }\n</style>\n</head>\n<body>\n\n  <div class=\"header\">\n    <h1>Manish Kumar Yadav</h1>\n    <div class=\"contact-line\">\n      manishkyadav969@gmail.com | +91-7404775037 |\n      <a href=\"[https://github.com/Manish-Yadav77](https://github.com/Manish-Yadav77)\">GitHub</a> |\n      <a href=\"[https://www.linkedin.com/in/manish-yadav-fullstack-mern/](https://www.linkedin.com/in/manish-yadav-fullstack-mern/)\">LinkedIn</a> |\n      <a href=\"[https://manishportfolio7.netlify.app](https://manishportfolio7.netlify.app)\">Portfolio</a> |\n      Rohtak, Haryana\n    </div>\n  </div>\n\n  <h2 class=\"section-title\">PROFESSIONAL SUMMARY</h2>\n  <p>${summary}</p>\n\n  <h2 class=\"section-title\">SKILLS</h2>\n  <ul class=\"skills-list\">\n    ${renderSkills(skills)}\n  </ul>\n\n  <h2 class=\"section-title\">EXPERIENCE</h2>\n\n  <div class=\"item-row\">\n    <span class=\"item-title\">Full Stack Developer, RCGemini, Hisar, IN</span>\n    <span class=\"item-date\">Apr, 2025 – Present</span>\n  </div>\n  <ul class=\"bullet-list\">\n    ${rcgeminiBullets.map(b => `<li>${b}</li>`).join('')}\n  </ul>\n\n  <div class=\"item-row\">\n    <span class=\"item-title\">Full Stack Developer Intern, Kodu-Powered by Dhurina, Hisar, IN</span>\n    <span class=\"item-date\">Oct, 2024 – Apr, 2025</span>\n  </div>\n  <ul class=\"bullet-list\">\n    ${koduBullets.map(b => `<li>${b}</li>`).join('')}\n  </ul>\n\n  <h2 class=\"section-title\">PROJECTS</h2>\n  ${projects.map(renderProject).join('')}\n\n  <h2 class=\"section-title\">EDUCATION & CERTIFICATIONS</h2>\n\n  <div class=\"item-row\">\n    <span class=\"item-title\">Full Stack Development Program + Internship, Hisar, Haryana</span>\n    <span class=\"item-date\">Apr, 2025</span>\n  </div>\n  <div class=\"item-subtitle\">Kodu (Powered by Dhurina)</div>\n  <ul class=\"bullet-list\">\n    <li>Completed a 1-year Full Stack Development Program followed by a 6-month Full Stack Developer Internship, building multiple MERN applications with one selected for production deployment.</li>\n  </ul>\n\n  <div class=\"item-row\" style=\"margin-top: 3px;\">\n    <span class=\"item-title\">Bachelor of Computer Application (BCA)</span>\n    <span class=\"item-date\">Dec, 2024</span>\n  </div>\n  <div class=\"item-subtitle\">Maharshi Dayanand University (MDU), Rohtak</div>\n  <ul class=\"bullet-list\">\n    <li>Coursework: Java, C++, DBMS, Operating Systems, Computer Networks, Object-Oriented Programming</li>\n  </ul>\n\n</body>\n</html>\n`;\n\nreturn {\n  json: {\n    html: htmlTemplate,\n    summary,\n    skills,\n    rcgemini_bullets: rcgeminiBullets,\n    kodu_bullets: koduBullets,\n    projects\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        -208
+      ],
+      "id": "592aceaf-a3a3-4e33-958c-bbf0e15ee033",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nothingishere.onrender.com/generate-pdf",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "text/html"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "text/html",
+        "body": "={{ $json.html }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        368,
+        -208
+      ],
+      "id": "b5c859db-f211-4518-a503-023509766f83",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    }
+  ],
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6d5aeedb7a1a28548bb8cf387acb714c596b660f1301c1f28ad5b9e30ec340fd"
+  }
+}
